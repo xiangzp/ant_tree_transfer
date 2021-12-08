@@ -147,11 +147,6 @@
     components: {},
     data () {
       return {
-        routeName: '',
-        form: this.$form.createForm(this),
-        postData: {},
-        mockData: [],
-        targetKeys: [],
         keywords: '',
         rightKeywords: '',
         leftData: [],
@@ -164,14 +159,6 @@
         rightIndeterminate: false,
         rightCheckedAll: false,
         rightRow: true
-      }
-    },
-    watch: {
-      $route: {
-        handler: function (route) {
-          this.routeName = route.name
-        },
-        immediate: true
       }
     },
     mounted () {
@@ -389,11 +376,7 @@
           })
           this.indeterminate = !!indeterminateList.length || !!checkedList.length && (checkedList.length < plainOptions.length)
           this.checkedAll = checkedList.length === plainOptions.length
-          if (this.indeterminate || this.checkedAll) {
-            this.leftRow = false
-          } else {
-            this.leftRow = true
-          }
+          this.leftRow = !(this.indeterminate || this.checkedAll)
         } else {
           const plainOptions = this.rightTreeData
           if (plainOptions.length === 0) {
@@ -412,11 +395,7 @@
           })
           this.rightIndeterminate = !!indeterminateList.length || !!checkedList.length && (checkedList.length < plainOptions.length)
           this.rightCheckedAll = checkedList.length === plainOptions.length
-          if (this.rightIndeterminate || this.rightCheckedAll) {
-            this.rightRow = false
-          } else {
-            this.rightRow = true
-          }
+          this.rightRow = !(this.rightIndeterminate || this.rightCheckedAll)
         }
       },
       filterRightTreeData () { // 过滤右边搜索
@@ -468,7 +447,7 @@
       setRightTree () { // 设置右边树
         const rightTree = this.rightTreeData
         const newLeftTree = []
-        this.leftData.forEach((row, i) => {
+        this.leftData.forEach(row => {
           if (row.checked) {
             const isOn = rightTree.filter(rightRow => {
               return rightRow.title === row.title
@@ -553,7 +532,7 @@
       setLeftTree () { // 设置左边树
         const leftTree = this.treeData
         const newRightTree = []
-        this.rightData.forEach((row, i) => {
+        this.rightData.forEach(row => {
           if (row.checked) {
             const isOn = leftTree.filter(leftRow => {
               return leftRow.title === row.title
